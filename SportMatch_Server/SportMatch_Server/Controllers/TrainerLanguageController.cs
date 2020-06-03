@@ -24,6 +24,14 @@ namespace SportMatch_1.Controllers
             return t.GetTrainerLang(trainerCode);
         }
 
+        [HttpPut]
+        [Route("api/TrainerArea/UpdateTrainerLang")]
+        public int UpdateTrainerLang([FromBody] TrainerLanguage[] t)
+        {
+            TrainerLanguage trainer = new TrainerLanguage();
+            return trainer.UpdateTrainerLang(t);
+        }
+
         // GET: api/TrainerLanguage/5
         public string Get(int id)
         {

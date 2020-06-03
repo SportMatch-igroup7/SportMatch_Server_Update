@@ -41,6 +41,15 @@ namespace SportMatch_1.Controllers
             return t.GetMatchTrainerList(replacementCode, branchCode,classTypeCode, maxPrice, languageCode, populationCode);
         }
 
+        [HttpPut]
+        [Route("api/Trainer/UpdateTrainerPersonalDetails")]
+        public int UpdateTrainerPersonalDetails([FromBody] Trainer t)
+        {
+            Trainer trainer = new Trainer();
+            return trainer.UpdateTrainerPersonalDetails(t);
+        }
+
+
         // GET: api/Trainer/5
         public string Get(int id)
         {

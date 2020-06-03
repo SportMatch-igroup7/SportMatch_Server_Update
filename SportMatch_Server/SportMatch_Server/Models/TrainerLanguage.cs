@@ -42,5 +42,14 @@ namespace SportMatch_1.Models
             List<TrainerLanguage> arrLang = dbs.GetTrainerLang(trainerCode);
             return arrLang;
         }
+
+        public int UpdateTrainerLang(TrainerLanguage[] t)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateTrainerLang(t);
+
+        }
     }
 }

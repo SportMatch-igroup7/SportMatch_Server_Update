@@ -24,6 +24,14 @@ namespace SportMatch_1.Controllers
             return ta.GetTrainerArea(trainerCode);
         }
 
+        [HttpPut]
+        [Route("api/TrainerArea/UpdateTrainerArea")]
+        public int UpdateTrainerArea([FromBody] TrainerArea [] t)
+        {
+            TrainerArea trainer = new TrainerArea();
+            return trainer.UpdateTrainerArea(t);
+        }
+
         // GET: api/TrainerArea/5
         public string Get(int id)
         {

@@ -28,6 +28,14 @@ namespace SportMatch_1.Controllers
             return lt.insert(LT);
         }
 
+        [HttpPut]
+        [Route("api/LinksTrainer/UpdateLinksTrainer")]
+        public int UpdateLinksTrainer([FromBody] LinksTrainer[] t)
+        {
+            LinksTrainer trainer = new LinksTrainer();
+            return trainer.UpdateLinksTrainer(t);
+        }
+
         // GET: api/LinksTrainer/5
         public string Get(int id)
         {

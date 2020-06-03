@@ -2357,6 +2357,218 @@ public class DBservices
             }
         }
     }
+
+    private String BuildUpdateCommandUpdateTrainerPersonalDetails(Trainer t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = @"UPDATE SM_Trainer Set
+                    FirstName ='" + t.FirstName + "',LastName ='" + t.LastName + "', PhoneNo1 ='" + t.Phone1 + "', PhoneNo2 ='" + t.Phone2 + "', Gender ='" + t.Gender + "', TrainerPassword ='" + t.Password + "', AboutMe ='" + t.AboutMe + "', MinPricePerHour ='" + t.PricePerHour + "', DateOfBirth ='" + t.DateOfBirth + "', Photo ='" + t.Image + "' where TrainerCode='" + t.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int UpdateTrainerPersonalDetails(Trainer t)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateCommandUpdateTrainerPersonalDetails(t);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private String BuildUpdateCommandUpdateTrainerArea(TrainerArea t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_TrainerArea Set AreaCode='" + t.AreaCode + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+    public int UpdateTrainerArea(TrainerArea[] t)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        foreach (var item in t)
+        {
+            String cStr = BuildUpdateCommandUpdateTrainerArea(item); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+            }
+            catch (Exception ex)
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+                // write to log
+                throw (ex);
+            }
+        }
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
+    }
+
+
+
+    private String BuildUpdateCommandUpdateTrainerLang(TrainerLanguage t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_LanguageTrainer Set LCode='" + t.LCode + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+    public int UpdateTrainerLang(TrainerLanguage[] t)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        foreach (var item in t)
+        {
+            String cStr = BuildUpdateCommandUpdateTrainerLang(item); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+            }
+            catch (Exception ex)
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+                // write to log
+                throw (ex);
+            }
+        }
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
+    }
+
+
+    private String BuildUpdateCommandUpdateLinksTrainer(LinksTrainer t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_LinksTrainer Set LinkCode='" + t.LinkCode + "', Link ='" + t.Link + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+    public int UpdateLinksTrainer(LinksTrainer[] t)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        foreach (var item in t)
+        {
+            String cStr = BuildUpdateCommandUpdateLinksTrainer(item); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+            }
+            catch (Exception ex)
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+                // write to log
+                throw (ex);
+            }
+        }
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
+    }
 }
 
 

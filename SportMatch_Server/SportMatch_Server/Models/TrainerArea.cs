@@ -43,5 +43,14 @@ namespace SportMatch_1.Models
             List<TrainerArea> arrArea = dbs.GetTrainerArea(trainerCode);
             return arrArea;
         }
+
+        public int UpdateTrainerArea(TrainerArea [] t)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateTrainerArea(t);
+
+        }
     }
 }

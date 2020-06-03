@@ -50,5 +50,14 @@ namespace SportMatch_1.Models
             return arrLinks;
         }
 
+        public int UpdateLinksTrainer(LinksTrainer[] t)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateLinksTrainer(t);
+
+        }
+
     }
 }

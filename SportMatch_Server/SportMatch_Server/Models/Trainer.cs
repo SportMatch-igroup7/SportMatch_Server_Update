@@ -101,5 +101,14 @@ namespace SportMatch_1.Models
             List<Match> arrTrainers = dbs.GetMatchTrainerList(replacementCode, branchCode, classTypeCode, maxPrice, languageCode, populationCode);
             return arrTrainers;
         }
+
+        public int UpdateTrainerPersonalDetails(Trainer t)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateTrainerPersonalDetails(t);
+
+        }
     }
 }
