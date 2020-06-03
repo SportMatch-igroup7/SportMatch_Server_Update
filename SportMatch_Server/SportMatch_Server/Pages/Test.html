@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="../Scripts/ajaxCalls.js"></script>
+	<meta charset="utf-8" />
+	<title></title>
+	<script>
+
+		$(document).ready(function () {
+			
+
+			//requestDetail = {
+			//	ReplacementCode: 98,
+			//	ContactName: "112",
+			//	BranchCode: 30,
+			//	ClassTypeCode: 2,
+			//	ClassDescription: "2",
+			//	Comments: "2",
+			//	DifficultyLevelCode: 2,
+			//	MaxPrice: 123,
+			//	LanguageCode: 2,
+			//	PopulationCode: 2,
+			//	PublishDateTime: "2020 - 05 - 01T16: 14: 19.712Z",
+			//	FromHour: "12:12",
+			//	ToHour: "13:13",
+			//	ReplacementDate: "2020 - 05 - 12"
+			//}
+			requestDetail = {
+				ClassTypeCode: 2,
+				MaxPrice: 123
+			}
+			ajaxCall("POST", "../api/Trainer/GetTrainerMatchRequest", JSON.stringify(requestDetail), successGetTrainer, errorGetTrainer);
+
+		});
+function successGetTrainer(data) {
+			console.log(data);
+		}
+		function errorGetTrainer(err) {
+			console.log(err);
+		}
+	</script>
+</head>
+<body>
+	<div>
+		start
+	</div>
+</body>
+</html>

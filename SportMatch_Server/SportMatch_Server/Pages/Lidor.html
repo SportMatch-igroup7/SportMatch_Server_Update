@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+
+        $(document).ready(function () {
+
+
+            //let trainerLinks = [
+            //    {
+            //        LinkCode: 1,
+            //        TrainerCode: 117,
+            //        Link: "www.google.com"
+            //    },
+            //    {
+            //        LinkCode: 2,
+            //        TrainerCode: 117,
+            //        Link: "www.google.com"
+            //    }
+            //]
+
+            ////ajaxCall("Post", "../api/LinksTrainer", JSON.stringify(trainerLinks), successGetTrainer, errorGetTrainer);
+
+
+            //let req = {
+            //    RequestCode: "237",
+            //}
+
+
+            //let link = [{
+            //    LinkCode: 1,
+            //    TrainerCode: 171,
+            //    Link: "www.google.com"
+            //}]
+
+            ////ajaxCall("Post", "../api/LinksTrainer/postLinksTrainer", JSON.stringify(link), successGetTrainer, errorGetTrainer);
+
+
+            //let deleteQual =
+            //    {
+            //        TrainerCode: 117,
+            //        QualificationTypeCode: 3
+            //    }
+
+            //ajaxCall("Delete", "../api/TrainerQualification/DeleteTrainerQualification", JSON.stringify(deleteQual), successGetTrainer, errorGetTrainer);
+
+            let branchCode = "30";
+            ajaxCall("Get", "../api/RequestDetails/getBranchRequests/"+branchCode+"/", "", successGetTrainer, errorGetTrainer);
+
+		});
+function successGetTrainer(data) {
+			console.log(data);
+		}
+		function errorGetTrainer(err) {
+			console.log(err);
+		}
+    </script>
+</head>
+<body>
+    <div>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+		$(document).ready(function () {
+			var requestDetail = JSON.parse(localStorage["requestDetail"]);
+			console.log(JSON.parse(localStorage["requestDetail"]));
+			console.log("requestDetail: " + JSON.stringify(requestDetail));
+			ajaxCall("GET", "../api/Parameter", "", successGetParameters, errorGetParameters);
+			ajaxCall("POST", "../api/Trainer/GetTrainerMatchRequest/" +JSON.stringify(requestDetail)+"/", "" , successGetTrainer, errorGetTrainer);
+			console.log("branchCode: "+branchCode);
+			ajaxCall("GET", "../api/BranchParameter/GetBranchParameter/" +branchCode+"/","", successGetBranchParameter, errorGetBranchParameter);
+			
+
+		});
+		var ArrMatches = [];
+		var ArrParameters = [];
+		var ArrBranchParameter = []; //all parameters+weight
+		var requestDetail = JSON.parse(localStorage["requestDetail"]);
+		var branchCode = requestDetail.BranchCode;
+		console.log("branchCode: " + branchCode);
+		console.log(JSON.stringify(requestDetail));
+
+		function successGetParameters(data) {
+			console.log(JSON.stringify(data));
+			ArrParameters = data;
+		}
+
+		function errorGetParameters(err) {
+			console.log(err);
+		}
+		function successGetTrainer(data) {
+            console.log(data);
+			console.log(JSON.stringify(data));
+			if (data.length == 0) {
+				alert("לא נמצאו התאמות");
+			}
+			else {
+				var j = 0;
+				for (k in data) {
+					ArrMatches[j] = data[k];
+					j++;
+				}
+			}
+			ajaxCall("GET", "../api/BranchParameter/GetBranchParameter", "branchCode=" + branchCode, successGetBranchParameter, errorGetBranchParameter);
+			
+			
+        }
+        function errorGetTrainer(err) {
+
+		}
+		function SortMatches() {
+			console.log("before sort "+JSON.stringify(ArrMatches));
+			ArrMatches.sort(function (a, b) { return b.MatchRating - a.MatchRating; });
+			console.log("after sort " + JSON.stringify(ArrMatches));
+			ShowMatches();
+		}
+
+        function SendRequest(requestCode, trainerCode, idButton) {
+            console.log(idButton);
+            document.getElementById(idButton).value = "בקשה נשלחה למאמן";
+            document.getElementById(idButton).disabled = true;
+            request = [
+                {
+                    RequestCode: 200,
+                    TrainerCode: 132
+                },
+                {
+                    RequestCode: 200,
+                    TrainerCode: 133
+                },
+            ];
+			//request = {
+			//	RequestCode: requestCode,
+			//	TrainerCode: trainerCode
+			//}
+			ajaxCall("POST", "../api/RequestTrainer", JSON.stringify(request), successSendRequest, errorSendRequest);
+
+		}
+		function successSendRequest(data) {
+			console.log(data);
+			alert("בקשה נשלחה למאמן");
+		}
+		function errorSendRequest(err) {
+			console.log(err);
+		}
+
+		function ShowMatches() {
+			var strTrainers = "";
+			for (var i = 0; i < ArrMatches.length; i++) {
+				console.log("data: "+JSON.stringify(ArrMatches[i]));
+				strTrainers += `<div class="TrainerFrame">`;
+				strTrainers += `<p>שם פרטי : ${ArrMatches[i].FirstName} </p>`;
+				strTrainers += `<p>שם משפחה : ${ArrMatches[i].LastName} </p>`;
+				strTrainers += `<p>מייל : ${ArrMatches[i].Email} </p>`;
+				strTrainers += `<p>מספר טלפון 1 : ${ArrMatches[i].Phone1} </p>`;
+				strTrainers += `<p>מספר טלפון 2 : ${ArrMatches[i].Phone2} </p>`;
+				strTrainers += `<p>מין : ${ArrMatches[i].Gender} </p>`;
+				strTrainers += `<p>קצת עלי : ${ArrMatches[i].AboutMe} </p>`;
+				strTrainers += `<p>מחיר דרוש לשעה : ${ArrMatches[i].PricePerHour} </p>`;
+				strTrainers += `<p>תאריך לידה : ${ArrMatches[i].DateOfBirth} </p>`;
+				strTrainers += `<p>דירוג : ${ArrMatches[i].Rate} </p>`;
+				strTrainers += `<p>אחוז התאמה : ${ArrMatches[i].MatchRating}% </p>`;
+				strTrainers += `<p><button id="${i}" onclick="SendRequest(${ArrMatches[i].RequestCode},${ArrMatches[i].TrainerCode},${i})">שלח בקשת החלפה</button></p>`;
+				strTrainers += `</div><br/>`;
+			}
+			$(`#allTrainers`).append(strTrainers);
+		}
+		function successGetBranchParameter(data) {
+			console.log("successGetBranchParameter: " + JSON.stringify(data));
+			var num = 0;
+			for (var l in data) {
+				console.log("ParameterCode: " + data[l].ParameterCode);
+				console.log("ParameterWeight: " + data[l].ParameterWeight);
+			
+				parameter = {
+					PCode: data[l].ParameterCode,
+					PName: ArrParameters[num].PName,
+					PWeight: data[l].ParameterWeight
+				}
+				ArrBranchParameter.push(parameter);
+				num++;
+			}
+			SortMatches() //sort the trainer by weight of parameters
+
+		}
+		function errorGetBranchParameter(err) {
+			console.log(err);
+		}
+
+    </script>
+    <style>
+
+        div.TrainerFrame {
+            border-style: solid;
+            text-align:right;
+        }
+    </style>
+</head>
+<body>
+    <div id="allTrainers">
+    </div>
+</body>
+</html>

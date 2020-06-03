@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script>
+        $(document).ready(function () {
+            ajaxCall("GET", "../api/Qualification", "", successGetQualification, errorGetQualification);
+            ajaxCall("GET", "../api/Population", "", successGetPopulation, errorGetPopulation);
+
+        });
+        var arrQualification;
+        var numOfQualification = 1;
+        function AddQualification() {
+            numOfQualification++;
+            arrQualification = `<div class="solid">
+                </br>
+                <div class="form-group" align="right">
+                    <select id="Qualification${numOfQualification}" required></select>
+                    <label for="exampleInputEmail1"> סוג שיעור </label>
+                </div> 
+                <div class="form-group" align="right">
+                    <select id="pop${numOfQualification}" required></select>
+                    <label for="exampleInputEmail1"> אוכלוסיית יעד </label>
+                </div>
+                <div class="form-group" align="right">
+                    <input type="date" id="bdate${numOfQualification}" name="bdate" style="direction: rtl;">
+                    <label for="exampleInputEmail1"> החל מתאריך </label>
+                </div>
+                <div class="form-group" align="right">
+                    <input type="file" id="doc${numOfQualification}" size="50">
+                    <label for="exampleInputEmail1"> הוסף תעודה </label>
+                </div>
+                </br>
+
+            </div>`;
+            ajaxCall("GET", "../api/Qualification", "", successGetQualification, errorGetQualification);
+            ajaxCall("GET", "../api/Population", "", successGetPopulation, errorGetPopulation);
+            $('#add').append(arrQualification);
+        }
+        function successGetQualification(data) {
+            let arrNames = "<option value =''>בחר סוג שיעור</option>";
+            for (k in data) {
+                arrNames += `<option value = ${data[k].TypeCode}>${data[k].TypeName} </option>`;
+            }
+            $(`#Qualification${numOfQualification}`).append(arrNames);
+        }
+
+        function errorGetQualification(err) {
+            console.log(err);
+        }
+        function successGetPopulation(data) {
+            let arrNames = "<option value =''>בחר אוכלוסיית יעד</option>";
+            for (k in data) {
+                arrNames += `<option value = ${data[k].Code}>${data[k].PName} </option>`;
+            }
+            $(`#pop${numOfQualification}`).append(arrNames);
+        }
+
+        function errorGetPopulation(err) {
+            console.log(err);
+        }
+
+        function InsertQualification() {
+            arrQualifictionToInsert = [];
+            var userDetails = JSON.parse(localStorage["userDetails"]);
+            var qualificationTypeCode;
+            var fromDate;
+            var populationCode;
+            var docPath;
+            var trainerCode = String(userDetails.TrainerCode);
+            for (i = 0; i < numOfQualification; i++) {
+                qualificationTypeCode = document.getElementById(`Qualification${numOfQualification}`).value;
+                fromDate = new Date(document.getElementById(`bdate${numOfQualification}`).value).toISOString().substr(0, 10);
+                populationCode = document.getElementById(`pop${numOfQualification}`).value;
+                docPath = document.getElementById(`doc${numOfQualification}`).value;
+                console.log(docPath);
+                qualification = {
+                    TrainerCode: trainerCode,
+                    QualificationTypeCode : qualificationTypeCode,
+                    PopulationCode: populationCode,
+                    DocumentPath: docPath,
+                    FromDate: fromDate
+                   
+                }
+                console.log(JSON.stringify(qualification));
+                arrQualifictionToInsert.push(qualification);       
+            }
+            console.log(JSON.stringify(arrQualifictionToInsert));
+
+            ajaxCall("POST", "../api/TrainerQualification", JSON.stringify(arrQualifictionToInsert), successInsertQualification, errorInsertQualification);
+
+        }
+
+        function successInsertQualification(data) {
+            alert("הרשמה בוצעה בהצלחה");
+            window.location.href = 'IndexTrainer.html';
+
+        }
+        function errorInsertQualification(err) {
+            console.log(err);
+        }
+    </script>
+    <style>
+        div.solid {
+            border-style: solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 align="center">הכשרות</h2>
+        <form id="PForm">
+            <div class="solid">
+                <br />
+                <div class="form-group" align="right">
+                    <select id="Qualification1" required></select>
+                    <label for="exampleInputEmail1"> סוג שיעור </label>
+                </div>
+                <div class="form-group" align="right">
+                    <select id="pop1" required></select>
+                    <label for="exampleInputEmail1"> אוכלוסיית יעד </label>
+                </div>
+                <div class="form-group" align="right">
+                    <input type="date" id="bdate1" name="bdate" style="direction: rtl;">
+                    <label for="exampleInputEmail1"> החל מתאריך </label>
+                </div>
+                <div class="form-group" align="right">
+                    <input type="file" id="doc1" size="50">
+                    <label for="exampleInputEmail1"> הוסף תעודה </label>
+                </div>
+                <br />
+            </div>
+            <div id="add">
+
+            </div>
+            <button type="submit" id="submit" onclick="InsertQualification()" class="btn btn-primary">הבא</button>
+            <button type="button" id="add" onclick="AddQualification()" class="btn btn-primary">הוסף הכשרה</button>
+
+
+        </form>
+    </div>
+</body>
+</html>
