@@ -2619,6 +2619,59 @@ public class DBservices
             }
         }
     }
+
+    private String BuildUpdateBranchCommand(Branch b)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_Branch Set BranchPassword='" + b.Password + "', BranchName='" + b.Name + "', BranchAddress='" + b.Address + "', AreaCode='" + b.AreaCode + "', PhoneNo='" + b.PhoneNo + "', BranchDescription='" + b.Description + "' WHERE BranchCode='" + b.BranchCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+    public int UpdetBranch(Branch b)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateBranchCommand(b); // helper method to build the insert string
+        cmd = CreateCommand(cStr, con);
+        try
+        {
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+            // write to log
+            throw (ex);
+        }
+
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
+    }
+    //new
 }
 
 

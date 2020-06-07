@@ -98,5 +98,11 @@ namespace SportMatch_1.Models
             return arrBranchs;
         }
 
+        public int updetBranch(Branch b)
+        {
+            DBservices dbs = new DBservices();
+            return dbs.UpdetBranch(b);
+        }
+
     }
 }

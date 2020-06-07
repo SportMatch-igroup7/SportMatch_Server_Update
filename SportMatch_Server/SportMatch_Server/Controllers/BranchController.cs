@@ -40,8 +40,10 @@ namespace SportMatch_1.Controllers
         }
 
         // PUT: api/Branch/5
-        public void Put(int id, [FromBody]string value)
+        public int Put([FromBody]Branch b)
         {
+            Branch branch = new Branch();
+            return branch.updetBranch(b);
         }
 
         // DELETE: api/Branch/5
