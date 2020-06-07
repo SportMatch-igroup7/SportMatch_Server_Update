@@ -2569,6 +2569,56 @@ public class DBservices
         }
         return numEffected;
     }
+
+
+    private String BuildUpdateCommandReopenRequest(RequestTrainer r)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_RequestForReplacmentTrainer Set IsApprovedByTrainer='" + r.IsApprovedByTrainer + "', RequestStatus='" + r.RequestStatus + "' WHERE RequestCode='" + r.RequestCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int ReopenRequest(RequestTrainer r)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateCommandReopenRequest(r);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
 }
 
 

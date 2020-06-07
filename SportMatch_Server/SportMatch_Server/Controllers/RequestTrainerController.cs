@@ -41,6 +41,15 @@ namespace SportMatch_1.Controllers
             return rt.UpdateRequestTrainer(r);
         }
 
+        [HttpPut]
+        [Route("api/RequestTrainer/ReopenRequest")]
+        public int ReopenRequest([FromBody] RequestTrainer r)
+        {
+            RequestTrainer rt = new RequestTrainer();
+            return rt.ReopenRequest(r);
+        }
+
+
         [HttpDelete]
         [Route("api/RequestTrainer/DeleteRequest")]
         public int DeleteRequest([FromBody] RequestTrainer r)

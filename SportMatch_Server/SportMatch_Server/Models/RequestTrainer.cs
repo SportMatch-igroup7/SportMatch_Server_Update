@@ -24,6 +24,13 @@ namespace SportMatch_1.Models
             this.RequestCode = re;
         }
 
+        public RequestTrainer(int re, string app, string status)
+        {
+            RequestCode = re;
+            IsApprovedByTrainer = app;
+            RequestStatus = status;
+        }
+
         public RequestTrainer(int re, int tr,string status)
         {
             this.RequestCode = re;
@@ -71,6 +78,15 @@ namespace SportMatch_1.Models
             DBservices dbs = new DBservices();
 
             return dbs.UpdateIsApprovedTrainerFalse(r);
+
+        }
+
+        public int ReopenRequest(RequestTrainer r)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.ReopenRequest(r);
 
         }
 
