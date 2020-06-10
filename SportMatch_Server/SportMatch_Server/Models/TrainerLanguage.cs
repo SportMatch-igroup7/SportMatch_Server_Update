@@ -48,7 +48,7 @@ namespace SportMatch_1.Models
 
             DBservices dbs = new DBservices();
 
-            return dbs.UpdateTrainerLang(t);
+            return dbs.DeleteTrainerLang(t);
 
         }
     }

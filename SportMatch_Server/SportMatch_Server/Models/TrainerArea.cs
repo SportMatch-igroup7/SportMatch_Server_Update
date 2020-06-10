@@ -49,7 +49,7 @@ namespace SportMatch_1.Models
 
             DBservices dbs = new DBservices();
 
-            return dbs.UpdateTrainerArea(t);
+            return dbs.DeleteTrainerArea(t);
 
         }
     }

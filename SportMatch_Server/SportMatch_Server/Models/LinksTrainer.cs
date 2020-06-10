@@ -55,7 +55,7 @@ namespace SportMatch_1.Models
 
             DBservices dbs = new DBservices();
 
-            return dbs.UpdateLinksTrainer(t);
+            return dbs.DeleteTrainerLinks(t);
 
         }
 

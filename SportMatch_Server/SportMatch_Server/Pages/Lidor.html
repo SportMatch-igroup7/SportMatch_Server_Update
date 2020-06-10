@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿html:
+
+<!DOCTYPE html>
 <html>
 <head>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -24,7 +26,7 @@
             //    }
             //]
 
-            ////ajaxCall("Post", "../api/LinksTrainer", JSON.stringify(trainerLinks), successGetTrainer, errorGetTrainer);
+            //ajaxCall("Post", "../api/LinksTrainer", JSON.stringify(trainerLinks), successGetTrainer, errorGetTrainer);
 
 
             //let req = {
@@ -32,38 +34,33 @@
             //}
 
 
-            //let link = [{
-            //    LinkCode: 1,
-            //    TrainerCode: 171,
-            //    Link: "www.google.com"
-            //}]
+            link = [{
+                LinkCode: 2,
+                TrainerCode: 132,
+                Link: "www.google.com"
+            }]
 
-            ////ajaxCall("Post", "../api/LinksTrainer/postLinksTrainer", JSON.stringify(link), successGetTrainer, errorGetTrainer);
+            ajaxCall("Post", "../api/LinksTrainer/postLinksTrainer", JSON.stringify(link), successGetTrainer, errorGetTrainer);
 
+            //ajaxCall("Delete", "../api/RequestTrainer/DeleteRequest", JSON.stringify(req), successGetTrainer, errorGetTrainer);
 
-            //let deleteQual =
-            //    {
-            //        TrainerCode: 117,
-            //        QualificationTypeCode: 3
-            //    }
+            //let branchCode = "30";
+            //ajaxCall("Get", "../api/RequestDetails/getBranchRequests/"+branchCode+"/", "", successGetTrainer, errorGetTrainer);
 
-            //ajaxCall("Delete", "../api/TrainerQualification/DeleteTrainerQualification", JSON.stringify(deleteQual), successGetTrainer, errorGetTrainer);
-
-            let branchCode = "30";
-            ajaxCall("Get", "../api/RequestDetails/getBranchRequests/"+branchCode+"/", "", successGetTrainer, errorGetTrainer);
-
-		});
-function successGetTrainer(data) {
-			console.log(data);
-		}
-		function errorGetTrainer(err) {
-			console.log(err);
-		}
+        });
+        function successGetTrainer(data) {
+            console.log(data);
+            alert("success");
+        }
+        function errorGetTrainer(err) {
+            console.log(err);
+            alert("error");
+        }
     </script>
 </head>
 <body>
     <div>
-        
+        <h1>test page</h1>
     </div>
 </body>
 </html>

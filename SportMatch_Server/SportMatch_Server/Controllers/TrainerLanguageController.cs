@@ -25,7 +25,7 @@ namespace SportMatch_1.Controllers
         }
 
         [HttpPut]
-        [Route("api/TrainerArea/UpdateTrainerLang")]
+        [Route("api/TrainerLanguage/UpdateTrainerLang")]
         public int UpdateTrainerLang([FromBody] TrainerLanguage[] t)
         {
             TrainerLanguage trainer = new TrainerLanguage();

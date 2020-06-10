@@ -515,14 +515,16 @@ public class DBservices
 
     // Build the Insert command String
     //--------------------------------------------------------------------
-    private String BuildInsertCommandLinksTrainer(LinksTrainer lt)
+    private String BuildInsertCommandLinksTrainer(LinksTrainer linkt)
     {
         String command;
+
         StringBuilder sb = new StringBuilder();
         // use a string builder to create the dynamic string
-        sb.AppendFormat("Values({0}, {1} ,{2})", lt.LinkCode, lt.TrainerCode, lt.Link);
+        sb.AppendFormat("Values('{0}', '{1}' ,'{2}')", linkt.LinkCode, linkt.TrainerCode, linkt.Link);
         String prefix = "INSERT INTO SM_LinksTrainer" + "(LinkCode , TrainerCode ,Link) ";
         command = prefix + sb.ToString();
+
         return command;
     }
     public int insertTrainerLinks(LinksTrainer[] LT)
@@ -539,7 +541,7 @@ public class DBservices
             // write to log
             throw (ex);
         }
-        foreach (var item in LT)
+        foreach (LinksTrainer item in LT)
         {
             String cStr = BuildInsertCommandLinksTrainer(item);      // helper method to build the insert string
             cmd = CreateCommand(cStr, con);             // create the command
@@ -561,6 +563,8 @@ public class DBservices
         }
         return numEffected;
     }
+
+
     public RequestForReplacement insertRequest(RequestForReplacement r)
     {
         // int requestId;
@@ -1563,6 +1567,9 @@ public class DBservices
                                 where TQ.QualificationTypeCode = '" + classTypeCode + "'  " +
                                 "and T.MinPricePerHour <= '" + maxPrice + "'  and LT.LCode = '" + languageCode + "'  " +
                                 "and TQ.PopulationCode = '" + populationCode + "' " +
+                                "and TA.AreaCode = (select AreaCode from SM_Branch B where b.BranchCode = '" + branchCode + "') or TQ.QualificationTypeCode = '" + classTypeCode + "'  " +
+                                "and T.MinPricePerHour <= '" + maxPrice + "'  and LT.LCode = '" + languageCode + "'  " +
+                                "and TQ.PopulationCode = 7 " +
                                 "and TA.AreaCode = (select AreaCode from SM_Branch B where b.BranchCode = '" + branchCode + "')";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
@@ -1608,6 +1615,8 @@ public class DBservices
         }
         return TrainerList;
     }
+
+
     public List<BranchParameter> GetBranchParameterList(int BranchCode)
     {
         List<BranchParameter> ParametersBranchList = new List<BranchParameter>();
@@ -2408,14 +2417,71 @@ public class DBservices
         }
     }
 
-    private String BuildUpdateCommandUpdateTrainerArea(TrainerArea t)
+    private String BuildDeleteCommandDeleteTrainerArea(TrainerArea t)
     {
         String command;
 
         StringBuilder sb = new StringBuilder();
-        string prefix = "UPDATE SM_TrainerArea Set AreaCode='" + t.AreaCode + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        string prefix = "DELETE from SM_TrainerArea WHERE TrainerCode='" + t.TrainerCode + "'";
         command = prefix + sb.ToString();
         return command;
+    }
+
+    public int DeleteTrainerArea(TrainerArea[] t)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteCommandDeleteTrainerArea(t[0]);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+        return UpdateTrainerArea(t);
+    }
+
+
+    private String BuildUpdateCommandUpdateTrainerArea(TrainerArea t)
+    {
+
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}', '{1}')", t.TrainerCode.ToString(), t.AreaCode.ToString());
+        String prefix = "INSERT INTO SM_TrainerArea" + "(TrainerCode , AreaCode) ";
+        command = prefix + sb.ToString();
+
+        return command;
+        
     }
     public int UpdateTrainerArea(TrainerArea[] t)
     {
@@ -2462,14 +2528,68 @@ public class DBservices
     }
 
 
-
-    private String BuildUpdateCommandUpdateTrainerLang(TrainerLanguage t)
+    private String BuildDeleteCommandDeleteTrainerLang(TrainerLanguage t)
     {
         String command;
 
         StringBuilder sb = new StringBuilder();
-        string prefix = "UPDATE SM_LanguageTrainer Set LCode='" + t.LCode + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        string prefix = "DELETE from SM_LanguageTrainer WHERE TrainerCode='" + t.TrainerCode + "'";
         command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int DeleteTrainerLang(TrainerLanguage[] t)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteCommandDeleteTrainerLang(t[0]);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+             numEffected = cmd.ExecuteNonQuery(); // execute the command
+            
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+        return UpdateTrainerLang(t);
+    }
+
+    private String BuildUpdateCommandUpdateTrainerLang(TrainerLanguage t)
+    {
+
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}', '{1}')", t.LCode.ToString(), t.TrainerCode.ToString());
+        String prefix = "INSERT INTO SM_LanguageTrainer" + "(LCode , TrainerCode) ";
+        command = prefix + sb.ToString();
+
         return command;
     }
     public int UpdateTrainerLang(TrainerLanguage[] t)
@@ -2517,14 +2637,71 @@ public class DBservices
     }
 
 
-    private String BuildUpdateCommandUpdateLinksTrainer(LinksTrainer t)
+    private String BuildDeleteCommandDeleteTrainerLinks(LinksTrainer t)
     {
         String command;
 
         StringBuilder sb = new StringBuilder();
-        string prefix = "UPDATE SM_LinksTrainer Set LinkCode='" + t.LinkCode + "', Link ='" + t.Link + "' WHERE TrainerCode='" + t.TrainerCode + "'";
+        string prefix = "DELETE from SM_LinksTrainer WHERE TrainerCode='" + t.TrainerCode + "'";
         command = prefix + sb.ToString();
         return command;
+    }
+
+    public int DeleteTrainerLinks(LinksTrainer [] t)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteCommandDeleteTrainerLinks(t[0]);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+        return UpdateLinksTrainer(t);
+    }
+
+
+    private String BuildUpdateCommandUpdateLinksTrainer(LinksTrainer t)
+    {
+
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}', '{1}', '{2}')", t.LinkCode.ToString(), t.TrainerCode.ToString(), t.Link);
+        String prefix = "INSERT INTO SM_LinksTrainer" + "(LinkCode , TrainerCode, Link) ";
+        command = prefix + sb.ToString();
+
+        return command;
+
     }
     public int UpdateLinksTrainer(LinksTrainer[] t)
     {
