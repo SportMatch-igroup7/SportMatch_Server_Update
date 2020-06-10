@@ -60,6 +60,22 @@ namespace SportMatch_1.Models
             Logo = log;
         }
 
+        public Branch(int bc, string n, string ad, string ph, string em, string des, int com, string pas, int ar, string compName, string arName, string log)
+        {
+            BranchCode = bc;
+            Name = n;
+            Address = ad;
+            PhoneNo = ph;
+            Email = em;
+            Description = des;
+            companyNo = com;
+            Password = pas;
+            AreaCode = ar;
+            CompanyName = compName;
+            AreaName = arName;
+            Logo = log;
+        }
+
         public Branch()
         {
 
