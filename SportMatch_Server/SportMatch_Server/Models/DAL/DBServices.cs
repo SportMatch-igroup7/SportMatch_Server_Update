@@ -1045,7 +1045,7 @@ public class DBservices
         {
             con = connect("DB7"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select distinct TrainerCode as Code, Email, TrainerPassword as 'Password', 'Trainer' as Type from SM_Trainer where Email = '" + email + "' UNION select distinct BranchCode as Code, Email, BranchPassword as 'Password' , 'Branch' as Type from SM_Branch where Email = '" + email + "'";
+            String selectSTR = "select distinct TrainerCode as Code, Email, TrainerPassword as 'Password', 'Trainer' as Type from SM_Trainer where Email = '" + email + "' UNION select distinct BranchCode as Code, Email, BranchPassword as 'Password' , 'Branch' as Type from SM_Branch where Email = '" + email + "' UNION select distinct AdminCode as Code, Email, AdminPassword as 'Password' , 'Admin' as Type from SM_Admin where Email = '" + email + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
             // get a reader
