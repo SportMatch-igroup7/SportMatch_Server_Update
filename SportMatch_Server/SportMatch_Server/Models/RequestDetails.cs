@@ -27,6 +27,7 @@ namespace SportMatch_1.Models
         int trainerCode;
         string isAprrovedByTrainer;
         string requestStatus;
+        string isRated;
 
         public int ReplacmentCode { get => replacmentCode; set => replacmentCode = value; }
         public string ContactName { get => contactName; set => contactName = value; }
@@ -48,6 +49,7 @@ namespace SportMatch_1.Models
         public string RequestStatus { get => requestStatus; set => requestStatus = value; }
         public string CompanyName { get => companyName; set => companyName = value; }
         public string Logo { get => logo; set => logo = value; }
+        public string IsRated { get => isRated; set => isRated = value; }
 
         public RequestDetails() { }
 
@@ -73,6 +75,31 @@ namespace SportMatch_1.Models
             TrainerCode = trainer;
             IsAprrovedByTrainer = app;
             RequestStatus = status;
+        }
+
+        public RequestDetails(string company, string logo, int reCode, string con, int branch, string typeN, string classDesc, string comm, string levelname, int maxp, string lname, string pname, string pubd, string from, string to, string repD, bool his, int trainer, string app, string status, string isRated)
+        {
+            CompanyName = company;
+            Logo = logo;
+            ReplacmentCode = reCode;
+            ContactName = con;
+            BranchCode = branch;
+            TypeName = typeN;
+            ClassDescription = classDesc;
+            Comments = comm;
+            LevelName = levelname;
+            MaxPrice = maxp;
+            LName = lname;
+            PName = pname;
+            PublishDateTime = pubd;
+            FromHour = from;
+            ToHour = to;
+            ReplacementDate = repD;
+            IsHistory = his;
+            TrainerCode = trainer;
+            IsAprrovedByTrainer = app;
+            RequestStatus = status;
+            IsRated = isRated;
         }
 
         public List<RequestDetails> GetBranchRequests (string branchCode)

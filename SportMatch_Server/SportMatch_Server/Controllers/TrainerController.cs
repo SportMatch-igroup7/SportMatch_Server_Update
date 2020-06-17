@@ -71,6 +71,19 @@ namespace SportMatch_1.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpPut]
+        [Route("api/RequestTrainer/PutTrainer")]
+        public void PutTrainer(int id, [FromBody]string value)
+        {
+        }
+        [HttpPut]
+        [Route("api/RequestTrainer/PutTrainerRate")]
+        public int PutTrainerRate([FromBody] Trainer r)
+        {
+            Trainer rt = new Trainer();
+            return rt.UpdateTrainerRate(r);
+        }
     }
 }
 

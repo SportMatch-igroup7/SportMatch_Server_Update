@@ -1851,7 +1851,7 @@ public class DBservices
         try
         {
             con = connect("DB7"); // create a connection to the database using the connection String defined in the web config file
-            string selectSTR = @"select c.CompanyName,c.Logo, r.ReplacmentCode, r.ContactName, r.BranchCode, q.TypeName, r.ClassDecription, r.Comments, d.LevelName, r.MaxPrice, l.LName,p.PName, r.PublishDateTime, r.FromHour, r.ToHour,r.ReplacmentDate,case when DATEDIFF(DAY,CONVERT(date,ReplacmentDate,102),GETDATE())>0 then 1 else 0 end as 'isHistory', rt.TrainerCode, rt.IsApprovedByTrainer, rt.RequestStatus
+            string selectSTR = @"select c.CompanyName,c.Logo, r.ReplacmentCode, r.ContactName, r.BranchCode, q.TypeName, r.ClassDecription, r.Comments, d.LevelName, r.MaxPrice, l.LName,p.PName, r.PublishDateTime, r.FromHour, r.ToHour,r.ReplacmentDate,case when DATEDIFF(DAY,CONVERT(date,ReplacmentDate,102),GETDATE())>0 then 1 else 0 end as 'isHistory', rt.TrainerCode, rt.IsApprovedByTrainer, rt.RequestStatus, case when rt.IsRated is NULL then '0' else rt.IsRated end as 'IsRated'
                                 from SM_Company c inner join SM_Branch b on c.CompanyNo = b.CompanyNo inner join SM_RequestForReplacment r on b.BranchCode = r.BranchCode inner join SM_RequestForReplacmentTrainer rt on r.ReplacmentCode = rt.RequestCode
                                 inner join SM_Qualification q on r.ClassTypeCode = q.TypeCode inner join SM_DifficultyLevel d on r.DifficultyLevelCode = d.LevelCode
                                 inner join SM_Language l on r.LanguageLCode = l.LCode inner join SM_Population p on r.PopulationCode = p.Code
@@ -1882,6 +1882,7 @@ public class DBservices
                 r.TrainerCode = Convert.ToInt32(dr["TrainerCode"]);
                 r.IsAprrovedByTrainer = (string)dr["IsApprovedByTrainer"];
                 r.RequestStatus = (string)dr["RequestStatus"];
+                r.IsRated = (string)dr["IsRated"];
 
                 branchRequests.Add(r);
             }
@@ -2848,7 +2849,266 @@ public class DBservices
         }
         return numEffected;
     }
-    //new
+
+    private String BuildInsertCommandQualification(Qualification Q)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}')", Q.TypeName);
+        String prefix = "INSERT INTO SM_Qualification" + "(TypeName) ";
+        command = prefix + sb.ToString();
+
+        return command;
+    }
+
+    public int InsertQualification(Qualification qualification)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildInsertCommandQualification(qualification);      // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+    private String BuildUpdateCommandQualification(Qualification P)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_Qualification Set TypeName='" + P.TypeName + "' WHERE TypeCode='" + P.TypeCode + "'";//properties
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int UpdateQualification(Qualification P)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        //foreach (var item in P)
+        //{
+        String cStr = BuildUpdateCommandQualification(P); // helper method to build the insert string
+        cmd = CreateCommand(cStr, con);
+        int numEffected;
+        try
+        {
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+            // write to log
+            throw (ex);
+        }
+        //}
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
+    }
+
+    public int Delete(int id)
+    {
+        int numEffected = 0;
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.AppendFormat("DELETE from SM_Qualification WHERE SM_Qualification.[TypeCode]={0}", id);
+        //sb.AppendFormat("DELETE from [Discounts_2020] WHERE [Discounts_2020].[rowID]={0}", id);
+        String cStr = sb.ToString();
+        // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            numEffected += cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+
+
+        return numEffected;
+    }
+
+    private String BuildUpdateCommandRequestTrainerRate(RequestTrainer r)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_RequestForReplacmentTrainer Set IsRated='" + r.IsRated + "' WHERE RequestCode='" + r.RequestCode + "'" + "AND TrainerCode = '" + r.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int UpdateRequestTrainerRate(RequestTrainer r)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateCommandRequestTrainerRate(r);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
+
+    private String BuildUpdateTrainerRate(Trainer r)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "UPDATE SM_Trainer Set Rate='" + r.Rate + "', SumOfRating='" + r.SumOfRating + "',NumOfRanks='" + r.NumOfRating + "' WHERE TrainerCode='" + r.TrainerCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int UpdateTrainerRate(Trainer r)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildUpdateTrainerRate(r);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            int numEffected = cmd.ExecuteNonQuery(); // execute the command
+            return numEffected;
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+    }
+
 }
 
 

@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="../Scripts/ajaxCalls.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="Style.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <title>Manager Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <!--<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>-->
+    <script src="../Scripts/ajaxCalls.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+
+    <style type="text/css">
+        .red-star {
+            color: red;
+        }
+
+        #newBTN {
+            background-color: blueviolet;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+
+        var mode;
+        $(document).ready(function () {
+            mode = "";
+            $("#editDiv").hide();
+            $("#pForm").submit(f1); // bind the submit event to a function called f1
+
+            ajaxCall("GET", "../api/Qualification", "", successGet, errorGet);
+            //ajaxCall("GET", "../api/Parameter/GetParameter/", "", successGet, errorGet);
+            $("#btn").click(InsertQualification);
+            buttonEvents();
+            $("#cancelSaveBTN").on("click", function () {
+                discount = null;
+                $("#editDiv").hide();
+                if (mode == "new") $("#pForm").show();
+            });
+            $("#newBTN").on("click", function () {
+                discount = null;
+                mode = "new";
+                $("#pForm").hide();
+                $("#editDiv").show();
+                clearFields();
+                $("#editDiv :input").prop("disabled", false); // new mode: enable all controls in the form
+            });
+
+            $("#DisForm").submit(onSubmitFunc);
+        });
+
+        function f1() {
+            return false;
+        }
+
+        var Qualification = "";
+        function successGet(data) {
+            Qualification = data; // keep the discounts array in a global variable;
+            console.log("diccounts get data: " + JSON.stringify(data));
+            console.log(Qualification[1].TypeCode);
+            try {
+                tbl = $('#pTable').DataTable({
+                    data: data,
+                    pageLength: 5,
+                    columns: [
+                        {
+                            render: function (data, type, row, meta) {
+                                //let dataparameters = "data-parametersId='" + row.Id + "'";
+                                var dataQualification = "data-parametersId='" + row.TypeCode + "'";
+                                editBtn = "<button type='button' value='" + row.TypeCode + "' onclick='putCode(Qualification,this)' class = 'editBtn btn btn-success' " + dataQualification + "> ערוך </button>";
+                                //viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataQualification + "> צפה </button>";
+                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataQualification + "> מחק </button>";
+                                //return editBtn + viewBtn + deleteBtn;
+                                return editBtn + deleteBtn;
+                            }
+
+                        },
+                        { data: "TypeCode" },
+                        { data: "TypeName" },
+
+                    ],
+                })
+            }
+
+            catch (err) {
+                console.log(err);
+            }
+        }
+
+        function errorGet(err) {
+            alert("im on error");
+        }
+
+        function putCode(Qualification, code) {//מתןך כפתור אדית בטבלה
+            let arrCode = ""
+            console.log(code.value)
+            document.getElementById("qualcode").placeholder = code.value;
+            //var arrCode = document.getElementById("qualcode").value;
+
+            //document.getElementById("qualcode").disabled = true;
+            //console.log("gbfg");
+            //let arrCode = `  <input type="text" disabled id="qualcode" value=${code.value}>`
+            //`< option value = '' > בחר קוד</option> `
+
+
+            //for (k in Qualification) {
+            //    //arrCode = `<option selected="true" disabled="disabled" value=${Qualification[k].TypeCode}>${code.value}</option>`
+            //    arrCode = `<option selected="true" value=${code.value}>${code.value}</option>`
+            ////arrCode += ` value=${Qualification[k].TypeCode}>${code.value}`
+            //document.getElementById("codePut").innerHTML = arrCode;
+
+            //document.getElementById("qualcode").innerHTML = arrCode;
+
+
+
+        }
+
+
+
+        function onSubmitFunc() {
+            var Id = 1;
+            if (mode == "edit") {
+                Id = name.AdminParametershtml;
+                console.log("Id: " + Id);
+            }
+
+            var nameQ = document.getElementById("namePut").value;
+            var codeQ = document.getElementById("qualcode").placeholder;
+            QualificationPut = {
+                TypeName: nameQ,
+                typeCode: codeQ
+                //Qname: nameQ,
+                //Qcode: codeQ
+            }
+            if (mode == "edit")
+                console.log(nameQ)
+            console.log(codeQ)
+                ajaxCall("PUT", "../api/Qualification", JSON.stringify(QualificationPut), updateSuccess, error);
+
+            return false;
+        }
+
+        function InsertQualification() {//נוסף
+
+            var name = document.getElementById("name").value;
+            Qualification = {
+                TypeName: name,
+
+            }
+            console.log(JSON.stringify(Qualification));
+            ajaxCall("POST", "../api/Qualification", JSON.stringify(Qualification), successInsertQualification, errorInsertQualification);
+        }
+        function successInsertQualification(data) {
+            //console.log(data);
+            swal("Good job!", "success", "success");
+            insertSuccess()
+
+        }
+        function errorInsertQualification(err) {
+            console.log(err);
+        }
+
+
+
+
+        function updateSuccess(data) {
+
+            buttonEvents();
+            $("#editDiv").hide();
+            swal("Updated Successfuly!", "Great Job", "success");
+            mode = "";
+            redrawTable(tbl, data);//הוספתי
+            location.reload();
+        }
+        function insertSuccess(data) {
+
+            buttonEvents();
+            $("#editDiv").hide();
+            swal("Updated Successfuly!", "Great Job", "success");
+            mode = "";
+            location.reload();
+        }
+        function error(err) {
+            swal("Error: " + err);
+        }
+
+
+        function buttonEvents() {//בהצלחה של הכנסה ועדכון
+
+            $(document).on("click", ".editBtn", function () {
+                mode = "edit";
+                markSelected(this);
+                $("#editDiv").show();
+                row.className = 'selected';
+                $("#editDiv :input").prop("disabled", false); // edit mode: enable all controls in the form
+                //$("#codePut :input").attr("disabled", "disabled");
+                populateFields(this.getAttribute('data-parametersId')); // fill the form fields according to the selected row
+            });
+
+
+
+            $(document).on("click", ".deleteBtn", function () {
+                mode = "delete";
+                markSelected(this);
+                var ParametersId = this.getAttribute('data-parametersId');
+                swal({ // this will open a dialouge
+                    title: "Are you sure ??",
+                    text: "",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                })
+                    .then(function (willDelete) {
+                        //for (i in parameters) {//נוסף
+                        //    id = parameters[i].Pcode;//נוסף
+                        if (willDelete) DeleteQualification(ParametersId);
+                        else swal("Not Deleted!");
+
+                    });
+            });
+        }
+
+        function markSelected(btn) {
+            $("#pTable tr").removeClass("selected"); // remove seleced class from rows that were selected before
+            row = (btn.parentNode).parentNode; // button is in TD which is in Row
+            row.className = 'selected'; // mark as selected
+        }
+
+
+        //var id = parameters.Pcode
+        //console.log(parameters.Pcode)
+        function DeleteQualification(id) {
+
+            ajaxCall("DELETE", "../api/Qualification/" + id, "", deleteSuccess, deleteerror);
+            //ajaxCall("DELETE", "../api/Parameter/" , "id="+id, deleteSuccess, deleteerror);
+
+        }
+        function deleteSuccess(data) {//להוסיף
+            //discounts = data;
+            //deleteFromList(parameters.Pcode);
+            deleteFromList(data.Id);
+            redrawTable(tbl, data);
+            buttonEvents(); // after redrawing the table, we must wire the new buttons
+            $("#editDiv").hide();
+            swal("Deleted Successfuly!", "Great Job", "success");
+            mode = "";
+            location.reload();
+        }
+        function deleteerror(err) {
+            console.log(err);
+
+        }
+
+        function deleteFromList(id) {//להוסיף
+            for (i in function deleteFromList(id) {//להוסיף
+                for (i in Qualification) {
+                    if (Qualification[i].typeCode == id)
+                        //if (parameters[i].Id == id)
+                        Qualification.splice(i, 1);
+
+                }
+            }) {
+                //if (parameters[i].Id == id)
+                if (Qualification[i].typeCode == id)
+                    Qualification.splice(i, 1);
+
+            }
+        }
+        function redrawTable(tbl, data) {
+            tbl.clear();
+            for (var i = 0; i < data.length; i++) {
+                tbl.row.add(data[i]);
+            }
+            tbl.draw();
+        }
+
+
+        function getQualifications(id) {
+            for (i in Qualification) {
+                if (Qualification[i].TypeCode == id)
+
+                    return Qualification[i];
+            }
+            return null;
+        }
+        function populateFields(ParametersId) {
+            Qualification1 = getQualifications(ParametersId)
+
+            $("#namePut").val(Qualification1.typeName);
+            $("#qualcode").val(Qualification1.typeCode);
+
+
+
+
+        }
+    </script>
+
+
+</head>
+<body>
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">תפריט</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="managerUse.html">דוח שימושיות</a></li>
+                <li><a href="managParameters.html">ניהול חברות</a></li>
+                <li class="active"><a href="managQualification.html">ניהול הכשרות</a></li>
+                <li><a href="index.html">התנתק</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+    <div id="show" class=" container">
+        <!--<input type="button" value="New" class="btn btn-primary btn-lg" id="newBTN" />-->
+
+
+
+        <form id="pForm">
+            <h2 style="text-align: right ;text-decoration: underline">:ניהול הכשרות</h2>
+            <!--class="btn-info"--><!--//להוספה-->
+
+            <br>
+
+            <div id="parameterForm" style="text-align: right">
+                <label for="Qname">   :הכנס הכשרה</label><br>
+                <input type="text" id="name"><br> <br>
+                <input id="btn" class="btn-info" type="button" value="הוסף"><br>
+
+            </div>
+
+            <br>
+            <table id="pTable" class="display nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>  אפשרויות</th>
+                        <th>קוד הכשרה</th>
+                        <th>סוג ההכשרה</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </form>
+
+        <div id="editDiv">
+            <form id="DisForm">
+                <div class="form-group row">
+
+                    <div style="text-align: right" class="form-group col-sm-3">
+                        <!--<label for="codePut">קוד הכשרה<span class="red-star">★ </span></label>-->
+                        <label for="qualcode">קוד הכשרה<span class="red-star">★ </span></label>
+                        <!--<select id="codePut" class="form-control">  </select>-->
+                        <input type="text" class="form-control" id="qualcode" readonly="readonly" />
+                        <!--<input type="text" class="form-control" id="qualcode" readonly="readonly" />-->
+                    </div>
+
+                    <!--<div style="text-align: right" class="form-group col-sm-3">
+                        <label for="codePut">קוד פרמטר<span class="red-star">★ </span></label>
+                        <input type="text" class="form-control" id="namePut" />
+                    </div>-->
+
+                    <div style="text-align: right" class="form-group col-sm-3">
+                        <label for="namePut">שם הכשרה חדשה<span class="red-star">★ </span></label>
+                        <input type="text" class="form-control" id="namePut" />
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" id="saveBTN">שמירה</button>
+                <input type="button" class="btn btn-warning btn-lg" id="cancelSaveBTN" value="ביטול" />
+            </form>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

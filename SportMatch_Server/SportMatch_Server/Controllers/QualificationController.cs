@@ -16,5 +16,25 @@ namespace SportMatch_1.Controllers
             Qualification q = new Qualification();
             return q.getQualifications();
         }
+
+        public int Post([FromBody]Qualification Q)
+        {
+            return Q.InsertQualification();
+        }
+
+        // PUT: api/Parameter/5
+        public int Put([FromBody] Qualification P)
+        {
+            Qualification qualification = new Qualification();
+            return qualification.UpdateQualification(P);
+        }
+        // DELETE: api/Parameter/5
+        [HttpDelete]
+        [Route("api/Qualification/{id}")]
+        public int Delete(int id)
+        {
+            Qualification d = new Qualification();
+            return d.Delete(id);
+        }
     }
 }

@@ -250,6 +250,8 @@
     <Content Include="Pages\IndexTrainer.html" />
     <Content Include="Pages\Lidor.html" />
     <Content Include="Pages\Login.html" />
+    <Content Include="Pages\managerUse.html" />
+    <Content Include="Pages\managQualification.html" />
     <Content Include="Pages\RequestForReplacement.html" />
     <Content Include="Pages\Test.html" />
     <Content Include="Pages\TrainerQualification.html" />

@@ -11,11 +11,13 @@ namespace SportMatch_1.Models
         int trainerCode;
         string isApprovedByTrainer;
         string requestStatus;
+        string isRated; //new
 
         public int RequestCode { get => requestCode; set => requestCode = value; }
         public int TrainerCode { get => trainerCode; set => trainerCode = value; }
         public string IsApprovedByTrainer { get => isApprovedByTrainer; set => isApprovedByTrainer = value; }
         public string RequestStatus { get => requestStatus; set => requestStatus = value; }
+        public string IsRated { get => isRated; set => isRated = value; }
 
         public RequestTrainer() { }
 
@@ -45,6 +47,15 @@ namespace SportMatch_1.Models
             this.IsApprovedByTrainer = app;
             this.RequestStatus = status;
         }
+
+        public RequestTrainer(int trainerCode, string israte, int requestCode)
+        {
+            this.RequestCode = requestCode;
+            this.TrainerCode = trainerCode;
+            this.IsRated = israte;
+        }
+
+        
 
 
         public int Insert(RequestTrainer [] r)
@@ -96,6 +107,15 @@ namespace SportMatch_1.Models
             DBservices dbs = new DBservices();
 
             return dbs.DeleteRequest(r);
+
+        }
+
+        public int UpdateRequestTrainerRate(RequestTrainer r)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateRequestTrainerRate(r);
 
         }
 

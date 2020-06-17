@@ -21,6 +21,8 @@ namespace SportMatch_1.Models
         string image;
         int age;
         float rate;
+        float sumOfRating;
+        int numOfRating;
 
 
         public Trainer()
@@ -42,6 +44,9 @@ namespace SportMatch_1.Models
         public string Image { get => image; set => image = value; }
         public float Rate { get => rate; set => rate = value; }
         public int Age { get => age; set => age = value; }
+        public float SumOfRating { get => sumOfRating; set => sumOfRating = value; }
+        public int NumOfRating { get => numOfRating; set => numOfRating = value; }
+
 
         public Trainer(string fn, string ln, string em, string ph1, string ph2, string gen, string pas, string abm, int pr, string dateofBirth, string img1,float rate)
         {
@@ -73,6 +78,14 @@ namespace SportMatch_1.Models
             DateOfBirth = dateOfBirth;
             Image = img1;
             Age = age1;
+        }
+
+        public Trainer(int trainerCode, float rate, float sumOfRating, int numOfRating)
+        {
+            this.TrainerCode = trainerCode;
+            this.SumOfRating = sumOfRating;
+            this.NumOfRating = numOfRating;
+            this.Rate = rate;
         }
 
         public Trainer insert()
@@ -109,6 +122,15 @@ namespace SportMatch_1.Models
 
             return dbs.UpdateTrainerPersonalDetails(t);
 
+        }
+
+        public int UpdateTrainerRate(Trainer r)
+        {
+            r.NumOfRating += 1;
+            r.SumOfRating += r.Rate;
+            r.Rate = r.SumOfRating / r.NumOfRating;
+            DBservices dbs = new DBservices();
+            return dbs.UpdateTrainerRate(r);
         }
     }
 }

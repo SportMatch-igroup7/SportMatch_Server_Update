@@ -30,5 +30,27 @@ namespace SportMatch_1.Models
             List<Qualification> arrQual = dbs.getQualification();
             return arrQual;
         }
+
+        public int InsertQualification()
+        {
+            DBservices dbs = new DBservices();
+            int numAffected = dbs.InsertQualification(this);
+            return numAffected;
+        }
+
+        public int UpdateQualification(Qualification P)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateQualification(P);
+
+        }
+
+        public int Delete(int id)
+        {
+            DBservices dbs = new DBservices();
+            return dbs.Delete(id);
+        }
     }
 }

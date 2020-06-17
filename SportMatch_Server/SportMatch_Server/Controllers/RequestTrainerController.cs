@@ -58,6 +58,14 @@ namespace SportMatch_1.Controllers
             return rt.DeleteRequest(r);
         }
 
+        [HttpPut]
+        [Route("api/RequestTrainer/PutRequestTrainerRate")]
+        public int PutRequestTrainerRate([FromBody] RequestTrainer r)
+        {
+            RequestTrainer rt = new RequestTrainer();
+            return rt.UpdateRequestTrainerRate(r);
+        }
+
 
         // GET: api/RequestTrainer/5
         //public string Get(int id)
