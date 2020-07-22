@@ -74,6 +74,7 @@ namespace SportMatch_1.Controllers
         //}
 
         // POST: api/RequestTrainer
+
         public int Post([FromBody] RequestTrainer [] rt)
         {
             RequestTrainer r = new RequestTrainer();

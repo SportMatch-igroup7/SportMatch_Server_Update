@@ -12,6 +12,7 @@ namespace SportMatch_1.Models
         int replacmentCode;
         string contactName;
         int branchCode;
+        string branchName;
         string typeName;
         string classDescription;
         string comments;
@@ -50,16 +51,18 @@ namespace SportMatch_1.Models
         public string CompanyName { get => companyName; set => companyName = value; }
         public string Logo { get => logo; set => logo = value; }
         public string IsRated { get => isRated; set => isRated = value; }
+        public string BranchName { get => branchName; set => branchName = value; }
 
         public RequestDetails() { }
 
-        public RequestDetails(string company, string logo, int reCode, string con, int branch, string typeN, string classDesc, string comm, string levelname, int maxp, string lname, string pname, string pubd, string from, string to, string repD, bool his, int trainer, string app, string status)
+        public RequestDetails(string company, string logo, int reCode, string con, int branch, string bname, string typeN, string classDesc, string comm, string levelname, int maxp, string lname, string pname, string pubd, string from, string to, string repD, bool his, int trainer, string app, string status)
         {
             CompanyName = company;
             Logo = logo;
             ReplacmentCode = reCode;
             ContactName = con;
             BranchCode = branch;
+            BranchName = bname;
             TypeName = typeN;
             ClassDescription = classDesc;
             Comments = comm;
@@ -77,13 +80,14 @@ namespace SportMatch_1.Models
             RequestStatus = status;
         }
 
-        public RequestDetails(string company, string logo, int reCode, string con, int branch, string typeN, string classDesc, string comm, string levelname, int maxp, string lname, string pname, string pubd, string from, string to, string repD, bool his, int trainer, string app, string status, string isRated)
+        public RequestDetails(string company, string logo, int reCode, string con, int branch,string bname, string typeN, string classDesc, string comm, string levelname, int maxp, string lname, string pname, string pubd, string from, string to, string repD, bool his, int trainer, string app, string status, string isRated)
         {
             CompanyName = company;
             Logo = logo;
             ReplacmentCode = reCode;
             ContactName = con;
             BranchCode = branch;
+            BranchName = bname;
             TypeName = typeN;
             ClassDescription = classDesc;
             Comments = comm;

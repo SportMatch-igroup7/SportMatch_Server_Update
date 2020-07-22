@@ -24,6 +24,14 @@ namespace SportMatch_1.Controllers
             return lt.GetLinks(branchCode);
         }
 
+        [HttpPut]
+        [Route("api/LinksTo/UpdateLinksBranch")]
+        public int UpdateLinksBranch([FromBody] LinksTo[] t)
+        {
+            LinksTo lt = new LinksTo();
+            return lt.UpdateLinksBranch(t);
+        }
+
         // GET: api/LinksTo/5
         public string Get(int id)
         {

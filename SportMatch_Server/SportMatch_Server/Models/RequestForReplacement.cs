@@ -72,6 +72,8 @@ namespace SportMatch_1.Models
             //RequestForReplacement numAffected = dbs.insertRequest(this);
             //return numAffected;
         }
+
+
         public int GetBranchAreaCode(int branchCode)
         {
             //function to get areaCode by branchCode for the element

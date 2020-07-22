@@ -11,6 +11,7 @@ using System.Web.Routing;
 using System.Web.Optimization;
 using SportMatch_1.Controllers;
 using SportMatch_1.Models;
+using static SportMatch_1.Models.MailHelper;
 
 /// <summary>
 /// DBServices is a class created by me to provides some DataBase Services
@@ -503,6 +504,14 @@ public class DBservices
                 // write to log
                 throw (ex);
             }
+            Trainer t1 = GetTrainer(item.TrainerCode.ToString());
+            string subject = "התקבלה בקשה חדשה להחלפה";
+            string body = @"שלום " + t1.FirstName + " " + t1.LastName + ",<br/>" +
+                                "התקבלה בקשת החלפה חדשה. <br/>" +
+                                " לפרטים נוספים הינך מוזמן להיכנס למערכת:http://proj.ruppin.ac.il/igroup7/proj/client/#/ <br/>" +
+                                "בברכה ,<br/> צוות SportMatch";
+            // SendEMail(t1.Email, subject, body);
+            SendEMail("sportmatch8@gmail.com", subject, body);
         }
         if (con != null)
         {
@@ -1481,7 +1490,7 @@ public class DBservices
         {
             con = connect("DB7"); // create a connection to the database using the connection String defined in the web config file
 
-            String selectSTR = "select t.*,case when datalength(Photo)= 0 or Photo is null then 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsyuHcX3SjjrV1IDflNLxre1r2b-jqFKefrWEQpOnUsbbajv1J&usqp=CAU' else Photo end as 'Image', DATEDIFF(DAY, convert(date, DateOfBirth, 102),GETDATE())/365 as Age from SM_Trainer t WHERE TrainerCode='" + TrainerCode + "'";
+            String selectSTR = "select t.*,case when SumOfRating is null then '0' else SumOfRating end as 'SumOfRating1', case when NumOfRanks is null then '0' else NumOfRanks end as 'NumOfRanks1' ,case when datalength(Photo)= 0 or Photo is null then 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQsyuHcX3SjjrV1IDflNLxre1r2b-jqFKefrWEQpOnUsbbajv1J&usqp=CAU' else Photo end as 'Image', DATEDIFF(DAY, convert(date, DateOfBirth, 102),GETDATE())/365 as Age from SM_Trainer t WHERE TrainerCode='" + TrainerCode + "'";
             SqlCommand cmd = new SqlCommand(selectSTR, con);
 
             // get a reader
@@ -1502,8 +1511,9 @@ public class DBservices
                 t.DateOfBirth = (string)dr["DateOfBirth"];
                 t.Image = (string)dr["Image"];
                 t.Age = Convert.ToInt32(dr["Age"]);
+                t.SumOfRating = (float)Convert.ToDouble(dr["SumOfRating1"]);
+                t.NumOfRating = Convert.ToInt32(dr["NumOfRanks1"]);
             }
-
         }
         catch (Exception ex)
         {
@@ -1598,7 +1608,6 @@ public class DBservices
 
                 TrainerList.Add(t);
             }
-
         }
         catch (Exception ex)
         {
@@ -1909,7 +1918,7 @@ public class DBservices
         try
         {
             con = connect("DB7"); // create a connection to the database using the connection String defined in the web config file
-            string selectSTR = @"select c.CompanyName,c.Logo, r.ReplacmentCode, r.ContactName, r.BranchCode, q.TypeName, r.ClassDecription, r.Comments, d.LevelName, r.MaxPrice, l.LName,p.PName, r.PublishDateTime, r.FromHour, r.ToHour,r.ReplacmentDate,case when DATEDIFF(DAY,CONVERT(date,ReplacmentDate,102),GETDATE())>0 then 1 else 0 end as 'isHistory', rt.TrainerCode, rt.IsApprovedByTrainer, rt.RequestStatus
+            string selectSTR = @"select c.CompanyName,c.Logo, r.ReplacmentCode, r.ContactName, r.BranchCode, r.BranchName, q.TypeName, r.ClassDecription, r.Comments, d.LevelName, r.MaxPrice, l.LName,p.PName, r.PublishDateTime, r.FromHour, r.ToHour,r.ReplacmentDate,case when DATEDIFF(DAY,CONVERT(date,ReplacmentDate,102),GETDATE())>0 then 1 else 0 end as 'isHistory', rt.TrainerCode, rt.IsApprovedByTrainer, rt.RequestStatus
                                 from SM_Company c inner join SM_Branch b on c.CompanyNo = b.CompanyNo inner join SM_RequestForReplacment r on b.BranchCode = r.BranchCode inner join SM_RequestForReplacmentTrainer rt on r.ReplacmentCode = rt.RequestCode
                                 inner join SM_Qualification q on r.ClassTypeCode = q.TypeCode inner join SM_DifficultyLevel d on r.DifficultyLevelCode = d.LevelCode
                                 inner join SM_Language l on r.LanguageLCode = l.LCode inner join SM_Population p on r.PopulationCode = p.Code
@@ -1925,6 +1934,7 @@ public class DBservices
                 r.ReplacmentCode = Convert.ToInt32(dr["ReplacmentCode"]);
                 r.ContactName = (string)dr["ContactName"];
                 r.BranchCode = Convert.ToInt32(dr["BranchCode"]);
+                r.BranchName = (string)dr["BranchName"];
                 r.TypeName = (string)dr["TypeName"];
                 r.ClassDescription = (string)dr["ClassDecription"];
                 r.Comments = (string)dr["Comments"];
@@ -1979,6 +1989,14 @@ public class DBservices
         try
         {
             con = connect("DB7"); // create the connection
+            Trainer t1 = GetTrainer(r.TrainerCode.ToString());
+            string subject = "התקבל אישור להחלפה";
+            string body = @"שלום " + t1.FirstName + " " + t1.LastName + ",<br/>" +
+                                "התקבל אישור להחלפה. <br/>" +
+                                " לפרטים נוספים הינך מוזמן להיכנס למערכת:http://proj.ruppin.ac.il/igroup7/proj/client/#/ <br/>" +
+                                "בברכה ,<br/> צוות SportMatch";
+            // SendEMail(t1.Email, subject, body);
+            SendEMail("sportmatch8@gmail.com", subject, body);
         }
         catch (Exception ex)
         {
@@ -2078,7 +2096,7 @@ public class DBservices
     {
         SqlConnection con;
         SqlCommand cmd;
-
+        int numEffected = 0;
         try
         {
             con = connect("DB7"); // create the connection
@@ -2095,13 +2113,22 @@ public class DBservices
 
         try
         {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+            RequestForReplacement req = GetRequestForReplacement(r.RequestCode);
+            Branch b = GetBranch(req.BranchCode.ToString());
+            string subject = "התקבל אישור להחלפה";
+            string body = @"שלום,<br/>" +
+                                "התקבל אישור להחלפה. <br/>" +
+                                " לפרטים נוספים הינך מוזמן להיכנס למערכת:http://proj.ruppin.ac.il/igroup7/proj/client/#/ <br/>" +
+                                "בברכה ,<br/> צוות SportMatch";
+            // SendEMail(t1.Email, subject, body);
+            SendEMail("sportmatch8@gmail.com", subject, body);
         }
         catch (Exception ex)
         {
             throw (ex);
         }
+
 
         finally
         {
@@ -2111,6 +2138,7 @@ public class DBservices
                 con.Close();
             }
         }
+        return numEffected;
     }
 
     private String BuildUpdateCommandIsApprovedTrainerFalse(RequestTrainer r)
@@ -2752,7 +2780,7 @@ public class DBservices
     private String BuildUpdateCommandReopenRequest(RequestTrainer r)
     {
         String command;
-
+   
         StringBuilder sb = new StringBuilder();
         string prefix = "UPDATE SM_RequestForReplacmentTrainer Set IsApprovedByTrainer='" + r.IsApprovedByTrainer + "', RequestStatus='" + r.RequestStatus + "' WHERE RequestCode='" + r.RequestCode + "'";
         command = prefix + sb.ToString();
@@ -2763,6 +2791,7 @@ public class DBservices
     {
         SqlConnection con;
         SqlCommand cmd;
+        int numEffected = 0;
 
         try
         {
@@ -2780,8 +2809,8 @@ public class DBservices
 
         try
         {
-            int numEffected = cmd.ExecuteNonQuery(); // execute the command
-            return numEffected;
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+            
         }
         catch (Exception ex)
         {
@@ -2796,6 +2825,7 @@ public class DBservices
                 con.Close();
             }
         }
+        return numEffected;
     }
 
     private String BuildUpdateBranchCommand(Branch b)
@@ -3107,6 +3137,166 @@ public class DBservices
                 con.Close();
             }
         }
+    }
+
+    public RequestForReplacement GetRequestForReplacement(int code)
+    {
+        RequestForReplacement t = new RequestForReplacement();
+        SqlConnection con = null;
+
+        try
+        {
+            con = connect("DB7"); // create a connection to the database using the connection String defined in the web config file
+
+            String selectSTR = "select * from SM_RequestForReplacment WHERE ReplacmentCode='" + code + "'";
+            SqlCommand cmd = new SqlCommand(selectSTR, con);
+
+            // get a reader
+            SqlDataReader dr = cmd.ExecuteReader(CommandBehavior.CloseConnection); // CommandBehavior.CloseConnection: the connection will be closed after reading has reached the end
+
+            while (dr.Read())
+            {   // Read till the end of the data into a row
+                t.ReplacementCode = Convert.ToInt32(dr["ReplacmentCode"]);
+                t.ContactName = (string)dr["ContactName"];
+                t.BranchCode = Convert.ToInt32(dr["BranchCode"]);
+                t.ClassTypeCode = Convert.ToInt32(dr["ClassTypeCode"]);
+                t.ClassDescription = (string)dr["ClassDecription"];
+                t.Comments = (string)dr["Comments"];
+                t.DifficultyLevelCode = Convert.ToInt32(dr["DifficultyLevelCode"]);
+                t.MaxPrice = Convert.ToInt32(dr["MaxPrice"]);
+                t.LanguageCode = Convert.ToInt32(dr["LanguageLCode"]);
+                t.PopulationCode = Convert.ToInt32(dr["PopulationCode"]);
+                t.PublishDateTime = (string)dr["PublishDateTime"];
+                t.FromHour = (string)dr["FromHour"];
+                t.ToHour = (string)dr["ToHour"];
+                t.ReplacementDate = (string)dr["ReplacmentDate"];
+            }
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                con.Close();
+            }
+
+        }
+        return t;
+    }
+
+
+    private String BuildDeleteCommandDeleteBranchLinks(LinksTo t)
+    {
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        string prefix = "DELETE from SM_LinksTo WHERE BranchCode='" + t.BranchCode + "'";
+        command = prefix + sb.ToString();
+        return command;
+    }
+
+    public int DeleteBranchLinks(LinksTo[] t)
+    {
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+
+        String cStr = BuildDeleteCommandDeleteBranchLinks(t[0]);     // helper method to build the insert string
+
+        cmd = CreateCommand(cStr, con);             // create the command
+
+        try
+        {
+            numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+        }
+        catch (Exception ex)
+        {
+            throw (ex);
+        }
+
+        finally
+        {
+            if (con != null)
+            {
+                // close the db connection
+                con.Close();
+            }
+        }
+        return UpdateLinksBranch(t);
+    }
+
+
+    private String BuildUpdateCommandUpdateLinksBranch(LinksTo t)
+    {
+
+        String command;
+
+        StringBuilder sb = new StringBuilder();
+        // use a string builder to create the dynamic string
+        sb.AppendFormat("Values('{0}', '{1}', '{2}')", t.BranchCode, t.LinkName, t.LinkCode);
+        String prefix = "INSERT INTO SM_LinksTo" + "(BranchCode , Link, LinkCode) ";
+        command = prefix + sb.ToString();
+
+        return command;
+
+    }
+    public int UpdateLinksBranch(LinksTo[] t)
+    {
+
+        SqlConnection con;
+        SqlCommand cmd;
+        int numEffected = 0;
+        try
+        {
+            con = connect("DB7"); // create the connection
+        }
+        catch (Exception ex)
+        {
+            // write to log
+            throw (ex);
+        }
+        foreach (var item in t)
+        {
+            String cStr = BuildUpdateCommandUpdateLinksBranch(item); // helper method to build the insert string
+            cmd = CreateCommand(cStr, con);
+            try
+            {
+                numEffected = cmd.ExecuteNonQuery(); // execute the command
+
+            }
+            catch (Exception ex)
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+                // write to log
+                throw (ex);
+            }
+        }
+        // create the command 
+        if (con != null)
+        {
+            // close the db connection
+            con.Close();
+        }
+        return numEffected;
     }
 
 }

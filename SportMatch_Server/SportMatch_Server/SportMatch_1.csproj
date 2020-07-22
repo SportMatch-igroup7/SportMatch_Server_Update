@@ -199,6 +199,7 @@
     <Compile Include="Controllers\QualificationController.cs" />
     <Compile Include="Controllers\RequestDetailsController.cs" />
     <Compile Include="Controllers\RequestForReplacementController.cs" />
+    <Compile Include="Controllers\ContactUsController.cs" />
     <Compile Include="Controllers\RequestTrainerController.cs" />
     <Compile Include="Controllers\TrainerAreaController.cs" />
     <Compile Include="Controllers\TrainerController.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Models\Link.cs" />
     <Compile Include="Models\LinksTo.cs" />
     <Compile Include="Models\LinksTrainer.cs" />
+    <Compile Include="Models\MailHelper.cs" />
     <Compile Include="Models\Match.cs" />
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Population.cs" />

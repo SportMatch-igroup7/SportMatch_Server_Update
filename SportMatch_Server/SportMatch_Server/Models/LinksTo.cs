@@ -41,5 +41,14 @@ namespace SportMatch_1.Models
             return arrLinks;
         }
 
+        public int UpdateLinksBranch(LinksTo[] t)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.DeleteBranchLinks(t);
+
+        }
+
     }
 }

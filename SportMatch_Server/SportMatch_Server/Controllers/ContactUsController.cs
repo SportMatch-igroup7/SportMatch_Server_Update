@@ -7,27 +7,14 @@ using System.Web.Http;
 using SportMatch_1.Models;
 using static SportMatch_1.Models.MailHelper;
 
-
-
 namespace SportMatch_1.Controllers
 {
-    public class UserController : ApiController
+    public class ContactUsController : ApiController
     {
-        // GET: Users
-
-        [HttpGet]
-        [Route("api/User/getUser/{email}/")]
-        public User getUser(string email)
-        {
-            User u = new User();
-            return u.getUsers(email);
-        }
-
-        // POST: Users
         public int Post([FromBody]string email)
         {
             User u = new User();
-            string password =  u.getUsers(email).Password;
+            string password = u.getUsers(email).Password;
             if (password != "")
             {
                 string subject = "שחזור סיסמה - SportMatch";
@@ -42,4 +29,5 @@ namespace SportMatch_1.Controllers
                 return 0;
         }
     }
+
 }

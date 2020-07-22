@@ -73,12 +73,12 @@ namespace SportMatch_1.Controllers
         }
 
         [HttpPut]
-        [Route("api/RequestTrainer/PutTrainer")]
+        [Route("api/Trainer/PutTrainer")]
         public void PutTrainer(int id, [FromBody]string value)
         {
         }
         [HttpPut]
-        [Route("api/RequestTrainer/PutTrainerRate")]
+        [Route("api/Trainer/PutTrainerRate")]
         public int PutTrainerRate([FromBody] Trainer r)
         {
             Trainer rt = new Trainer();
@@ -86,4 +86,3 @@ namespace SportMatch_1.Controllers
         }
     }
 }
-

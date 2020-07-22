@@ -12,42 +12,17 @@
 
         $(document).ready(function () {
 
-
-            //let trainerLinks = [
-            //    {
-            //        LinkCode: 1,
-            //        TrainerCode: 117,
-            //        Link: "www.google.com"
-            //    },
-            //    {
-            //        LinkCode: 2,
-            //        TrainerCode: 117,
-            //        Link: "www.google.com"
-            //    }
-            //]
-
-            //ajaxCall("Post", "../api/LinksTrainer", JSON.stringify(trainerLinks), successGetTrainer, errorGetTrainer);
-
-
-            //let req = {
-            //    RequestCode: "237",
-            //}
-
-
-            link = [{
-                LinkCode: 2,
-                TrainerCode: 132,
-                Link: "www.google.com"
-            }]
-
-            ajaxCall("Post", "../api/LinksTrainer/postLinksTrainer", JSON.stringify(link), successGetTrainer, errorGetTrainer);
-
-            //ajaxCall("Delete", "../api/RequestTrainer/DeleteRequest", JSON.stringify(req), successGetTrainer, errorGetTrainer);
-
-            //let branchCode = "30";
-            //ajaxCall("Get", "../api/RequestDetails/getBranchRequests/"+branchCode+"/", "", successGetTrainer, errorGetTrainer);
+            let req = {
+                RequestCode: 289,
+                TrainerCode: 117,
+                IsApprovedByTrainer: "true"
+            };
+            ajaxCall("PUT", "../api/RequestTrainer/PutIsApprovedTrainer", JSON.stringify(req), successGetTrainer, errorGetTrainer);
 
         });
+
+       
+
         function successGetTrainer(data) {
             console.log(data);
             alert("success");
