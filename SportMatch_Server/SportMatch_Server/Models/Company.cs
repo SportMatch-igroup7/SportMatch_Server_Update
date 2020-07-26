@@ -31,6 +31,26 @@ namespace SportMatch_1.Models
             return arrCompany;
         }
 
+        public int InsertCompany()
+        {
+            DBservices dbs = new DBservices();
+            int numAffected = dbs.InsertCompany(this);
+            return numAffected;
+        }
+        public int UpdateCompany(Company Pu)
+        {
+
+            DBservices dbs = new DBservices();
+
+            return dbs.UpdateCompany(Pu);
+
+        }
+        public int Delete(int id)
+        {
+            DBservices dbs = new DBservices();
+            return dbs.DeleteC(id);
+        }
+
     }
 
 

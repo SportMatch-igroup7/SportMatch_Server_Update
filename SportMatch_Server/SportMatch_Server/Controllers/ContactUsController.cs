@@ -21,7 +21,7 @@ namespace SportMatch_1.Controllers
                 string body = @"סיסמתך היא: " + password + "<br/>" +
                                     " הינך מוזמן להיכנס למערכת:http://proj.ruppin.ac.il/igroup7/proj/client/#/ <br/>" +
                                     "בברכה ,<br/> צוות SportMatch";
-                // SendEMail(t1.Email, subject, body);
+                // SendEMail(u.Email, subject, body);
                 SendEMail("sportmatch8@gmail.com", subject, body);
                 return 1;
             }

@@ -40,9 +40,9 @@
             $("#editDiv").hide();
             $("#pForm").submit(f1); // bind the submit event to a function called f1
 
-            ajaxCall("GET", "../api/Qualification", "", successGet, errorGet);
-            //ajaxCall("GET", "../api/Parameter/GetParameter/", "", successGet, errorGet);
-            $("#btn").click(InsertQualification);
+            //ajaxCall("GET", "../api/Qualification", "", successGet, errorGet);
+            ajaxCall("GET", "../api/Company", "", successGet, errorGet);
+            $("#btn").click(InsertCompany);
             buttonEvents();
             $("#cancelSaveBTN").on("click", function () {
                 discount = null;
@@ -65,11 +65,11 @@
             return false;
         }
 
-        var Qualification = "";
+        var Company = "";
         function successGet(data) {
-            Qualification = data; // keep the discounts array in a global variable;
+            Company = data; // keep the discounts array in a global variable;
             console.log("diccounts get data: " + JSON.stringify(data));
-            console.log(Qualification[1].TypeCode);
+            console.log(Company[1].CompanyNo);
             try {
                 tbl = $('#pTable').DataTable({
                     data: data,
@@ -78,17 +78,19 @@
                         {
                             render: function (data, type, row, meta) {
                                 //let dataparameters = "data-parametersId='" + row.Id + "'";
-                                var dataQualification = "data-parametersId='" + row.TypeCode + "'";
-                                editBtn = "<button type='button' value='" + row.TypeCode + "' onclick='putCode(Qualification,this)' class = 'editBtn btn btn-success' " + dataQualification + "> ערוך </button>";
+                                var dataCompany = "data-parametersId='" + row.CompanyNo + "'";
+                                editBtn = "<button type='button' value='" + row.CompanyNo + "' onclick='putCode(Company,this)' class = 'editBtn btn btn-success' " + dataCompany + "> ערוך </button>";
                                 //viewBtn = "<button type='button' class = 'viewBtn btn btn-info' " + dataQualification + "> צפה </button>";
-                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataQualification + "> מחק </button>";
+                                deleteBtn = "<button type='button' class = 'deleteBtn btn btn-danger' " + dataCompany + "> מחק </button>";
                                 //return editBtn + viewBtn + deleteBtn;
                                 return editBtn + deleteBtn;
                             }
 
                         },
-                        { data: "TypeCode" },
-                        { data: "TypeName" },
+                        { data: "CompanyNo" },
+                        { data: "Name" },
+                        { data: "Logo" },
+
 
                     ],
                 })
@@ -103,27 +105,10 @@
             alert("im on error");
         }
 
-        function putCode(Qualification, code) {//מתןך כפתור אדית בטבלה
+        function putCode(Company, code) {//מתןך כפתור אדית בטבלה
             let arrCode = ""
             console.log(code.value)
             document.getElementById("qualcode").placeholder = code.value;
-            //var arrCode = document.getElementById("qualcode").value;
-
-            //document.getElementById("qualcode").disabled = true;
-            //console.log("gbfg");
-            //let arrCode = `  <input type="text" disabled id="qualcode" value=${code.value}>`
-            //`< option value = '' > בחר קוד</option> `
-
-
-            //for (k in Qualification) {
-            //    //arrCode = `<option selected="true" disabled="disabled" value=${Qualification[k].TypeCode}>${code.value}</option>`
-            //    arrCode = `<option selected="true" value=${code.value}>${code.value}</option>`
-            ////arrCode += ` value=${Qualification[k].TypeCode}>${code.value}`
-            //document.getElementById("codePut").innerHTML = arrCode;
-
-            //document.getElementById("qualcode").innerHTML = arrCode;
-
-
 
         }
 
@@ -138,37 +123,42 @@
 
             var nameQ = document.getElementById("namePut").value;
             var codeQ = document.getElementById("qualcode").placeholder;
-            QualificationPut = {
-                TypeName: nameQ,
-                typeCode: codeQ
-                //Qname: nameQ,
-                //Qcode: codeQ
+            var logoQ = document.getElementById("logoPut").value;
+            CompanyPut = {
+                Name: nameQ,
+                CompanyNo: codeQ,
+                Logo: logoQ
+
             }
             if (mode == "edit")
                 console.log(nameQ)
             console.log(codeQ)
-                ajaxCall("PUT", "../api/Qualification", JSON.stringify(QualificationPut), updateSuccess, error);
+            ajaxCall("PUT", "../api/Company", JSON.stringify(CompanyPut), updateSuccess, error);
 
             return false;
         }
 
-        function InsertQualification() {//נוסף
+        function InsertCompany() {//נוסף
 
-            var name = document.getElementById("name").value;
-            Qualification = {
-                TypeName: name,
+            //var name = document.getElementById("name").value;//שניתי
+            var name = document.getElementById("nameC").value;
+            var logoQ = document.getElementById("nameL").value;
+            Company = {
+                Name: name,
+                Logo: logoQ
+
 
             }
-            console.log(JSON.stringify(Qualification));
-            ajaxCall("POST", "../api/Qualification", JSON.stringify(Qualification), successInsertQualification, errorInsertQualification);
+            console.log(JSON.stringify(Company));
+            ajaxCall("POST", "../api/Company", JSON.stringify(Company), successInsertCompany, errorInsertCompany);
         }
-        function successInsertQualification(data) {
+        function successInsertCompany(data) {
             //console.log(data);
             swal("Good job!", "success", "success");
             insertSuccess()
 
         }
-        function errorInsertQualification(err) {
+        function errorInsertCompany(err) {
             console.log(err);
         }
 
@@ -225,7 +215,7 @@
                     .then(function (willDelete) {
                         //for (i in parameters) {//נוסף
                         //    id = parameters[i].Pcode;//נוסף
-                        if (willDelete) DeleteQualification(ParametersId);
+                        if (willDelete) DeleteCompany(ParametersId);
                         else swal("Not Deleted!");
 
                     });
@@ -241,10 +231,10 @@
 
         //var id = parameters.Pcode
         //console.log(parameters.Pcode)
-        function DeleteQualification(id) {
+        function DeleteCompany(id) {
 
-            ajaxCall("DELETE", "../api/Qualification/" + id, "", deleteSuccess, deleteerror);
-            //ajaxCall("DELETE", "../api/Parameter/" , "id="+id, deleteSuccess, deleteerror);
+            ajaxCall("DELETE", "../api/Company/" + id, "", deleteSuccess, deleteerror);
+
 
         }
         function deleteSuccess(data) {//להוסיף
@@ -265,16 +255,16 @@
 
         function deleteFromList(id) {//להוסיף
             for (i in function deleteFromList(id) {//להוסיף
-                for (i in Qualification) {
-                    if (Qualification[i].typeCode == id)
+                for (i in Company) {
+                    if (Company[i].CompanyNo == id)
                         //if (parameters[i].Id == id)
-                        Qualification.splice(i, 1);
+                        Company.splice(i, 1);
 
                 }
             }) {
                 //if (parameters[i].Id == id)
-                if (Qualification[i].typeCode == id)
-                    Qualification.splice(i, 1);
+                if (Company[i].CompanyNo == id)
+                    Company.splice(i, 1);
 
             }
         }
@@ -287,19 +277,19 @@
         }
 
 
-        function getQualifications(id) {
-            for (i in Qualification) {
-                if (Qualification[i].TypeCode == id)
+        function getCompanys(id) {
+            for (i in Company) {
+                if (Company[i].CompanyNo == id)
 
-                    return Qualification[i];
+                    return Company[i];
             }
             return null;
         }
         function populateFields(ParametersId) {
-            Qualification1 = getQualifications(ParametersId)
+            Company1 = getCompanys(ParametersId)
 
-            $("#namePut").val(Qualification1.typeName);
-            $("#qualcode").val(Qualification1.typeCode);
+            $("#namePut").val(Company1.Name);
+            $("#qualcode").val(Company1.CompanyNo);
 
 
 
@@ -318,25 +308,35 @@
 
 
         <form id="pForm">
-            <h2 style="text-align: right ;text-decoration: underline">:ניהול הכשרות</h2>
+            <h2 style="text-align: right ;text-decoration: underline">:ניהול חברות</h2>
             <!--class="btn-info"--><!--//להוספה-->
 
             <br>
 
             <div id="parameterForm" style="text-align: right">
-                <label for="Qname">   :הכנס הכשרה</label><br>
-                <input type="text" id="name"><br> <br>
-                <input id="btn" class="btn-info" type="button" value="הוסף"><br>
+                <label for="nameC">   :הכנס את שם חברה</label><br>
+                <input type="text" id="nameC"><br> <br>
+                <!--<input id="btn" class="btn-info" type="button" value="הוסף"><br>-->
+
+                <div id="parameterForm" style="text-align: right">
+                    <label for="nameL">   : הכנס קישור ללוגו החברה</label><br>
+                    <input type="text" id="nameL"><br> <br>
+                    <input id="btn" class="btn-info" type="button" value="הוסף">
+
+                </div>
 
             </div>
+
+
 
             <br>
             <table id="pTable" class="display nowrap" style="width:100%">
                 <thead>
                     <tr>
                         <th>  אפשרויות</th>
-                        <th>קוד הכשרה</th>
-                        <th>סוג ההכשרה</th>
+                        <th>קוד חברה</th>
+                        <th>שם חברה</th>
+                        <th>לוגו</th>
 
                     </tr>
                 </thead>
@@ -349,7 +349,7 @@
 
                     <div style="text-align: right" class="form-group col-sm-3">
                         <!--<label for="codePut">קוד הכשרה<span class="red-star">★ </span></label>-->
-                        <label for="qualcode">קוד הכשרה<span class="red-star">★ </span></label>
+                        <label for="qualcode">קוד חברה<span class="red-star">★ </span></label>
                         <!--<select id="codePut" class="form-control">  </select>-->
                         <input type="text" class="form-control" id="qualcode" readonly="readonly" />
                         <!--<input type="text" class="form-control" id="qualcode" readonly="readonly" />-->
@@ -361,8 +361,14 @@
                     </div>-->
 
                     <div style="text-align: right" class="form-group col-sm-3">
-                        <label for="namePut">שם הכשרה חדשה<span class="red-star">★ </span></label>
+                        <label for="namePut">שם חברה חדשה<span class="red-star">★ </span></label>
                         <input type="text" class="form-control" id="namePut" />
+                    </div>
+
+
+                    <div style="text-align: right" class="form-group col-sm-3">
+                        <label for="logoPut">לוגו חדש<span class="red-star">★ </span></label>
+                        <input type="text" class="form-control" id="logoPut" />
                     </div>
 
                 </div>

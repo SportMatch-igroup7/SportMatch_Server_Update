@@ -106,6 +106,16 @@ namespace SportMatch_1.Models
             IsRated = isRated;
         }
 
+        public RequestDetails(string company, string bname, string type, string fhour, string thour, string rdate)
+        {
+            CompanyName = company;
+            BranchName = bname;
+            TypeName = type;
+            FromHour = fhour;
+            ToHour = thour;
+            ReplacementDate = rdate;
+        }
+
         public List<RequestDetails> GetBranchRequests (string branchCode)
         {
             DBservices dbs = new DBservices();
